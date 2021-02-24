@@ -380,6 +380,25 @@ after the fight. The battle has the following possible outcomes:
 
 -}
 
+data Knight = MkKnight
+  { knightHealth :: Int
+  , knightAttack :: Int
+  , knightGold :: Int
+  }
+
+data Monster = MkMonster
+  { monsterHealth :: Int
+  , monsterAttack :: Int
+  , monsterGold :: Int
+  }
+
+
+fight :: Monster -> Knight -> Int
+fight (MkMonster {monsterHealth = mH, monsterAttack = mA, monsterGold = mG}) (MkKnight {knightHealth = kH, knightAttack = kA, knightGold = kG})
+  | kA - mH >= 0 = kG + mG
+  | mA - kH < 0 = -1
+  | otherwise = kG
+
 {- |
 =🛡= Sum types
 
@@ -466,6 +485,16 @@ Create a simple enumeration for the meal types (e.g. breakfast). The one who
 comes up with the most number of names wins the challenge. Use your creativity!
 -}
 
+data Meal
+  = Breakfast String
+  | Brunch String
+  | Lunch String
+  | Linner String
+  | Dinner String
+  | Supper String
+  | Supfast String
+    
+
 {- |
 =⚔️= Task 4
 
@@ -485,6 +514,37 @@ After defining the city, implement the following functions:
    complicated task, walls can be built only if the city has a castle
    and at least 10 living __people__ inside in all houses of the city in total.
 -}
+
+data Castle = MkCastle { name :: String } deriving(Show)
+
+data Building = Church String | Library String
+
+data House = MkHouse { people :: Int } deriving(Show)
+
+data City = MkCity
+  { castle :: Castle
+  , wall :: Bool
+  , building :: Building
+  , houses :: [House]}
+
+
+buildCastle :: City -> String -> City
+buildCastle (MkCity _ w b h) castleName = MkCity newCastle w b h
+  where newCastle = MkCastle castleName
+
+buildHouse :: City -> Int -> City
+buildHouse (MkCity c w b h) p = MkCity c w b (MkHouse p : h) if p < 5
+
+sumHouses :: [House] -> Int
+sumHouses [(MkHouse p) : xs] = p + sumHouses xs
+sumHouses [] = 0
+
+
+buildWalls :: City -> Maybe City
+buildWalls (MkCity c w b h)
+  | population < 10 = Nothing
+  | (population >= 10) and () 
+
 
 {-
 =🛡= Newtypes
